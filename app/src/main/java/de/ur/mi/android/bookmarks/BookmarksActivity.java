@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,18 +13,28 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import de.ur.mi.android.bookmarks.bookmarks.Bookmark;
+import de.ur.mi.android.bookmarks.ui.BookmarkAdapter;
 
 public class BookmarksActivity extends AppCompatActivity {
 
     private ArrayList<Bookmark> bookmarks;
+    private BookmarkAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initUi();
         setContentView(R.layout.activity_bookmarks);
         bookmarks = new ArrayList<>();
         handleIntent(getIntent());
 
+    }
+
+    private void initUi() {
+        setContentView(R.layout.activity_bookmarks);
+        adapter = new BookmarkAdapter();
+        RecyclerView recyclerView = findViewById(R.id.bookmark_list);
+        recyclerView.setAdapter(adapter);
     }
 
     private void handleIntent(Intent intent) {
@@ -35,6 +46,7 @@ public class BookmarksActivity extends AppCompatActivity {
         if (intentAction.equals(intent.ACTION_SEND)) {
             if (intentType.equals("text/plain")) {
                 bookmarks.add(createBookmark(intent));
+                adapter.setBookmarks(bookmarks);
             }
         }
     }
